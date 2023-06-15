@@ -334,6 +334,282 @@ app.post('/login', async (req, res) => {
 });
 
 
+
+// POST request to handle user login
+app.get('/users', async (req, res) => {
+    //const { userid, password } = req.query;
+    const userid = req.body.username;
+    const password = req.body.password;
+
+    try {
+        const user = await users.findOne({ userid });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const currentDateObj = new Date();
+        const year = currentDateObj.getFullYear();
+        const month = String(currentDateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDateObj.getDate()).padStart(2, '0');
+        const currentDate = `${year}-${month}-${day}`;
+
+        const startDate = user.goal_set_date;
+
+        const startDateObj = new Date(startDate);
+
+        const index1 = Math.floor((currentDateObj - startDateObj) / (24 * 60 * 60 * 1000));
+
+        let index = index1;
+
+        // console.log(startDateObj);
+        // console.log(currentDateObj);
+        // console.log(index);
+
+
+        let m_check = 'no';
+
+        if (user.meditation[index] == '1') {
+            console.log('already exists');
+            m_check = 'done';
+        } else {
+            console.log('not exists');
+            m_check = 'undone';
+
+        }
+
+        const count = user.meditation.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+        const pp = index;
+
+        const pp1 = m_check;
+
+
+
+
+        //jogging
+
+        const currentDateObj_j = new Date();
+        const year_j = currentDateObj_j.getFullYear();
+        const month_j = String(currentDateObj_j.getMonth() + 1).padStart(2, '0');
+        const day_j = String(currentDateObj_j.getDate()).padStart(2, '0');
+        const currentDate_j = `${year_j}-${month_j}-${day_j}`;
+
+        const startDate_j = user.j_goal_set_date;
+
+        const startDateObj_j = new Date(startDate_j);
+
+        const index1_j = Math.floor((currentDateObj_j - startDateObj_j) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_j);
+        console.log(currentDateObj_j);
+
+        let index_j = index1_j;
+
+        let j_check = 'no';
+
+        if (user.jogging[index_j] == '1') {
+            console.log('already exists');
+            j_check = 'done';
+        } else {
+            console.log('not exists');
+            j_check = 'undone';
+
+        }
+
+        const count1 = user.jogging.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_j = index_j;
+
+        const pp1_j = j_check;
+
+
+        // console.log('j_index : ' + pp_j);
+        // console.log('j_check : ' + pp1_j);
+
+
+
+
+
+        //pushups: 
+        const currentDateObj_p = new Date();
+        const year_p = currentDateObj_p.getFullYear();
+        const month_p = String(currentDateObj_p.getMonth() + 1).padStart(2, '0');
+        const day_p = String(currentDateObj_p.getDate()).padStart(2, '0');
+        const currentDate_p = `${year_p}-${month_p}-${day_p}`;
+
+        const startDate_p = user.p_goal_set_date;
+
+        const startDateObj_p = new Date(startDate_p);
+
+        const index1_p = Math.floor((currentDateObj_p - startDateObj_p) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_p);
+        console.log(currentDateObj_p);
+
+        let index_p = index1_p;
+
+        let p_check = 'no';
+
+        if (user.puspups[index_p] == '1') {
+            console.log('already exists');
+            p_check = 'done';
+        } else {
+            console.log('not exists');
+            p_check = 'undone';
+
+        }
+
+        const count2 = user.puspups.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_p = index_p;
+
+        const pp1_p = p_check;
+
+        // console.log('p_index : ' + pp_p);
+        // console.log('p_check : ' + pp1_p);
+
+
+
+
+        //pushups: 
+        const currentDateObj_d = new Date();
+        const year_d = currentDateObj_d.getFullYear();
+        const month_d = String(currentDateObj_d.getMonth() + 1).padStart(2, '0');
+        const day_d = String(currentDateObj_p.getDate()).padStart(2, '0');
+        const currentDate_d = `${year_d}-${month_d}-${day_d}`;
+
+        const startDate_d = user.d_goal_set_date;
+
+        const startDateObj_d = new Date(startDate_d);
+
+        const index1_d = Math.floor((currentDateObj_d - startDateObj_d) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_d);
+        console.log(currentDateObj_d);
+
+        let index_d = index1_d;
+
+        let d_check = 'no';
+
+        if (user.dumble[index_d] == '1') {
+            console.log('already exists');
+            d_check = 'done';
+        } else {
+            console.log('not exists');
+            d_check = 'undone';
+
+        }
+
+        const count3 = user.dumble.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_d = index_d;
+
+        const pp1_d = d_check;
+
+        console.log('d_index : ' + pp_d);
+        console.log('d_check : ' + pp1_d);
+
+
+
+
+        user.meditation_count = count;
+        user.meditation_check = pp1;
+        user.meditation_current_date_index = pp;
+
+        user.jogging_count = count1;
+        user.jogging_check = pp1_j;
+        user.jogging_current_date_index = pp_j;
+
+        user.pushups_count = count2;
+        user.pushups_check = pp1_p;
+        user.pushups_current_date_index = pp_p;
+
+
+        user.dumble_count = count3;
+        user.dumble_check = pp1_d;
+        user.dumble_current_date_index = pp_d;
+
+
+        //learderboard
+        const topUsers = await users.find({}).sort({ points: -1 }).limit(4);
+
+
+
+        const responseUser = {
+            _id: user._id,
+            username: user.username,
+            password: user.password,
+            goal_set_date: user.goal_set_date,
+            meditation: user.meditation,
+            userid: user.userid,
+            meditation_count: user.meditation_count,
+            meditation_check: user.meditation_check,
+            meditation_current_date_index: user.meditation_current_date_index,
+
+            jogging: user.jogging,
+            jogging_count: user.jogging_count,
+            jogging_check: user.jogging_check,
+            jogging_current_date_index: user.jogging_current_date_index,
+
+
+            puspups: user.puspups,
+            puspups: user.puspups_count,
+            puspups_check: user.puspups_check,
+            puspups_current_date_index: user.puspups_current_date_index,
+
+            dumble: user.dumble,
+            dumble_count: user.dumble_count,
+            dumble_check: user.dumble_check,
+            dumbles_current_date_index: user.dumble_current_date_index,
+
+
+            top_users: topUsers.map((user) => ({
+                _id: user._id,
+                username: user.username,
+                points: user.points,
+                fav_exe: user.fav_exe,
+                profile_img: user.profile_img,
+                position: user.position
+            }))
+        };
+
+        res.json(responseUser);
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 // POST request to handle user login
 // app.post('/login', async (req, res) => {
 //     const { userid, password } = req.query;
