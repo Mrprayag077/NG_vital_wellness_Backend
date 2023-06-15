@@ -58,8 +58,12 @@ const users = mongoose.model('users', usersSchema);
 // POST request to handle user login
 app.post('/login', async (req, res) => {
     //const { userid, password } = req.query;
-    const userid = req.body.username;
-    const password = req.body.password;
+    // const userid = req.body.username;
+    // const password = req.body.password;
+
+    const userid = req.query.userid || req.body.username;
+    const password = req.query.password || req.body.password;
+
 
     try {
         const user = await users.findOne({ userid });
@@ -337,9 +341,10 @@ app.post('/login', async (req, res) => {
 
 // POST request to handle user login
 app.get('/users', async (req, res) => {
-    //const { userid, password } = req.query;
-    const userid = req.body.username;
-    const password = req.body.password;
+    //const { userid } = req.query;
+    //const userid = req.body.username;
+    const userid = req.query.userid || req.body.username;
+
 
     try {
         const user = await users.findOne({ userid });
@@ -696,7 +701,13 @@ app.get('/users', async (req, res) => {
 // });
 
 app.post('/submitmeditation', async (req, res) => {
-    const { userid, med_checked, j_checked, p_checked, d_checked } = req.query;
+    // const { userid, med_checked, j_checked, p_checked, d_checked } = req.query;
+
+    const userid = req.query.userid || req.body.username;
+    const med_checked = req.query.med_checked || req.body.med_checked;
+    const j_checked = req.query.j_checked || req.body.j_checked;
+    const p_checked = req.query.p_checked || req.body.p_checked;
+    const d_checked = req.query.d_checked || req.body.d_checked;
 
     try {
         const currentDateObj = new Date();
