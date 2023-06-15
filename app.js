@@ -56,7 +56,9 @@ const users = mongoose.model('users', usersSchema);
 
 // POST request to handle user login
 app.post('/login', async (req, res) => {
-    const { userid, password } = req.query;
+    //const { userid, password } = req.query;
+    const userid = req.body.username;
+    const password = req.body.password;
 
     try {
         const user = await users.findOne({ userid });
