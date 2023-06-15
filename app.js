@@ -2,7 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require("mongoose");
-const cors = require('cors');
+
+const cors = require("cors");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(
         credentials: true,
     })
 );
+
 
 mongoose.set('strictQuery', false);
 
@@ -57,13 +59,11 @@ const users = mongoose.model('users', usersSchema);
 
 // POST request to handle user login
 app.post('/login', async (req, res) => {
-    //const { userid, password } = req.query;
-    // const userid = req.body.username;
-    // const password = req.body.password;
+    const userid = req.body.username;
+    const password = req.body.password;
+    // const { userid, password } = req.query;
 
-    const userid = req.query.userid || req.body.username;
-    const password = req.query.password || req.body.password;
-
+    console.log(userid, password);
 
     try {
         const user = await users.findOne({ userid });
@@ -90,10 +90,9 @@ app.post('/login', async (req, res) => {
 
         let index = index1;
 
-        // console.log(startDateObj);
-        // console.log(currentDateObj);
-        // console.log(index);
-
+        console.log(startDateObj);
+        console.log(currentDateObj);
+        console.log(index);
 
         let m_check = 'no';
 
@@ -115,176 +114,13 @@ app.post('/login', async (req, res) => {
         }, 0);
 
         const pp = index;
-
         const pp1 = m_check;
 
-
-
-
-        //jogging
-
-        const currentDateObj_j = new Date();
-        const year_j = currentDateObj_j.getFullYear();
-        const month_j = String(currentDateObj_j.getMonth() + 1).padStart(2, '0');
-        const day_j = String(currentDateObj_j.getDate()).padStart(2, '0');
-        const currentDate_j = `${year_j}-${month_j}-${day_j}`;
-
-        const startDate_j = user.j_goal_set_date;
-
-        const startDateObj_j = new Date(startDate_j);
-
-        const index1_j = Math.floor((currentDateObj_j - startDateObj_j) / (24 * 60 * 60 * 1000));
-
-        console.log(startDateObj_j);
-        console.log(currentDateObj_j);
-
-        let index_j = index1_j;
-
-        let j_check = 'no';
-
-        if (user.jogging[index_j] == '1') {
-            console.log('already exists');
-            j_check = 'done';
-        } else {
-            console.log('not exists');
-            j_check = 'undone';
-
-        }
-
-        const count1 = user.jogging.reduce((accumulator, currentValue) => {
-            if (currentValue === '1') {
-                return accumulator + 1;
-            } else {
-                return accumulator;
-            }
-        }, 0);
-
-
-        const pp_j = index_j;
-
-        const pp1_j = j_check;
-
-
-        // console.log('j_index : ' + pp_j);
-        // console.log('j_check : ' + pp1_j);
-
-
-
-
-
-        //pushups: 
-        const currentDateObj_p = new Date();
-        const year_p = currentDateObj_p.getFullYear();
-        const month_p = String(currentDateObj_p.getMonth() + 1).padStart(2, '0');
-        const day_p = String(currentDateObj_p.getDate()).padStart(2, '0');
-        const currentDate_p = `${year_p}-${month_p}-${day_p}`;
-
-        const startDate_p = user.p_goal_set_date;
-
-        const startDateObj_p = new Date(startDate_p);
-
-        const index1_p = Math.floor((currentDateObj_p - startDateObj_p) / (24 * 60 * 60 * 1000));
-
-        console.log(startDateObj_p);
-        console.log(currentDateObj_p);
-
-        let index_p = index1_p;
-
-        let p_check = 'no';
-
-        if (user.puspups[index_p] == '1') {
-            console.log('already exists');
-            p_check = 'done';
-        } else {
-            console.log('not exists');
-            p_check = 'undone';
-
-        }
-
-        const count2 = user.puspups.reduce((accumulator, currentValue) => {
-            if (currentValue === '1') {
-                return accumulator + 1;
-            } else {
-                return accumulator;
-            }
-        }, 0);
-
-
-        const pp_p = index_p;
-
-        const pp1_p = p_check;
-
-        // console.log('p_index : ' + pp_p);
-        // console.log('p_check : ' + pp1_p);
-
-
-
-
-        //pushups: 
-        const currentDateObj_d = new Date();
-        const year_d = currentDateObj_d.getFullYear();
-        const month_d = String(currentDateObj_d.getMonth() + 1).padStart(2, '0');
-        const day_d = String(currentDateObj_p.getDate()).padStart(2, '0');
-        const currentDate_d = `${year_d}-${month_d}-${day_d}`;
-
-        const startDate_d = user.d_goal_set_date;
-
-        const startDateObj_d = new Date(startDate_d);
-
-        const index1_d = Math.floor((currentDateObj_d - startDateObj_d) / (24 * 60 * 60 * 1000));
-
-        console.log(startDateObj_d);
-        console.log(currentDateObj_d);
-
-        let index_d = index1_d;
-
-        let d_check = 'no';
-
-        if (user.dumble[index_d] == '1') {
-            console.log('already exists');
-            d_check = 'done';
-        } else {
-            console.log('not exists');
-            d_check = 'undone';
-
-        }
-
-        const count3 = user.dumble.reduce((accumulator, currentValue) => {
-            if (currentValue === '1') {
-                return accumulator + 1;
-            } else {
-                return accumulator;
-            }
-        }, 0);
-
-
-        const pp_d = index_d;
-
-        const pp1_d = d_check;
-
-        console.log('d_index : ' + pp_d);
-        console.log('d_check : ' + pp1_d);
-
-
-
+        console.log('m_check : ' + m_check);
 
         user.meditation_count = count;
         user.meditation_check = pp1;
         user.meditation_current_date_index = pp;
-
-        user.jogging_count = count1;
-        user.jogging_check = pp1_j;
-        user.jogging_current_date_index = pp_j;
-
-        user.pushups_count = count2;
-        user.pushups_check = pp1_p;
-        user.pushups_current_date_index = pp_p;
-
-
-        user.dumble_count = count3;
-        user.dumble_check = pp1_d;
-        user.dumble_current_date_index = pp_d;
-
 
         //learderboard
         const topUsers = await users.find({}).sort({ points: -1 }).limit(3);
@@ -301,31 +137,10 @@ app.post('/login', async (req, res) => {
             meditation_count: user.meditation_count,
             meditation_check: user.meditation_check,
             meditation_current_date_index: user.meditation_current_date_index,
-
-            jogging: user.jogging,
-            jogging_count: user.jogging_count,
-            jogging_check: user.jogging_check,
-            jogging_current_date_index: user.jogging_current_date_index,
-
-
-            puspups: user.puspups,
-            puspups: user.puspups_count,
-            puspups_check: user.puspups_check,
-            puspups_current_date_index: user.puspups_current_date_index,
-
-            dumble: user.dumble,
-            dumble_count: user.dumble_count,
-            dumble_check: user.dumble_check,
-            dumbles_current_date_index: user.dumble_current_date_index,
-
-
             top_users: topUsers.map((user) => ({
                 _id: user._id,
                 username: user.username,
-                points: user.points,
-                fav_exe: user.fav_exe,
-                profile_img: user.profile_img,
-                position: user.position
+                points: user.points
             }))
         };
 
@@ -337,13 +152,11 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
-
-// POST request to handle user login
+//Get single user details
 app.get('/users', async (req, res) => {
     //const { userid } = req.query;
     //const userid = req.body.username;
-    const userid = req.query.userid || req.body.username;
+    const userid = req.query.userid || req.query.username;
 
 
     try {
@@ -553,9 +366,9 @@ app.get('/users', async (req, res) => {
         user.jogging_check = pp1_j;
         user.jogging_current_date_index = pp_j;
 
-        user.pushups_count = count2;
-        user.pushups_check = pp1_p;
-        user.pushups_current_date_index = pp_p;
+        user.puspups_count = count2;
+        user.puspups_check = pp1_p;
+        user.puspups_current_date_index = pp_p;
 
 
         user.dumble_count = count3;
@@ -606,6 +419,7 @@ app.get('/users', async (req, res) => {
             }))
         };
 
+        console.log("Workout res", responseUser);
         res.json(responseUser);
 
     } catch (error) {
@@ -613,6 +427,24 @@ app.get('/users', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// app.get("/users", (req, res) => {
+//     const username = req.query.username; // Assuming the username is included in the request query parameters
+
+//     const query = `SELECT * FROM users WHERE username = ?`;
+
+//     console.log("Name = ", username);
+
+//     db.query(query, [username], (err, result) => {
+//         if (err) {
+//             return res.json(err);
+//         }
+
+//         console.log("result = ", result);
+//         return res.json(result);
+//     });
+// });
+
 
 
 // POST request to handle user login
@@ -703,11 +535,18 @@ app.get('/users', async (req, res) => {
 app.post('/submitmeditation', async (req, res) => {
     // const { userid, med_checked, j_checked, p_checked, d_checked } = req.query;
 
-    const userid = req.query.userid || req.body.username;
-    const med_checked = req.query.med_checked || req.body.med_checked;
-    const j_checked = req.query.j_checked || req.body.j_checked;
-    const p_checked = req.query.p_checked || req.body.p_checked;
-    const d_checked = req.query.d_checked || req.body.d_checked;
+    // const userid = req.query.userid || req.body.username;
+    // const med_checked = req.query.med_checked || req.body.med_checked;
+    // const j_checked = req.query.j_checked || req.body.j_checked;
+    // const p_checked = req.query.p_checked || req.body.p_checked;
+    // const d_checked = req.query.d_checked || req.body.d_checked;
+
+    const userid = req.body.username;
+    const med_checked = req.body.med_checked;
+    const j_checked = req.body.j_checked;
+    const p_checked = req.body.p_checked;
+    const d_checked = req.body.d_checked;
+    console.log("DDDDD", d_checked);
 
     try {
         const currentDateObj = new Date();
@@ -947,4 +786,4 @@ app.post('/submitmeditation', async (req, res) => {
 //     }
 // });
 
-app.listen(8000, () => console.log('listening on port: 5000'));
+app.listen(8000, () => console.log('listening on port: 8000'));
