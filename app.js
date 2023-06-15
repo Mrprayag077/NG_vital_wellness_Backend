@@ -44,7 +44,8 @@ const usersSchema = new mongoose.Schema({
     dumble: [String],
     points: Number,
     fav_exe: String,
-    profile_img: String
+    profile_img: String,
+    position: String
 
     // Add other fields as needed
 });
@@ -313,10 +314,14 @@ app.post('/login', async (req, res) => {
             dumble_check: user.dumble_check,
             dumbles_current_date_index: user.dumble_current_date_index,
 
+
             top_users: topUsers.map((user) => ({
                 _id: user._id,
                 username: user.username,
-                points: user.points
+                points: user.points,
+                fav_exe: user.fav_exe,
+                profile_img: user.profile_img,
+                position: user.position
             }))
         };
 
