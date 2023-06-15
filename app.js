@@ -37,10 +37,14 @@ const usersSchema = new mongoose.Schema({
     goal_set_date: String,
     j_goal_set_date: String,
     p_goal_set_date: String,
+    d_goal_set_date: String,
     meditation: [String],
     jogging: [String],
     puspups: [String],
-    points: Number
+    dumble: [String],
+    points: Number,
+    fav_exe: String,
+    profile_img: String
 
     // Add other fields as needed
 });
@@ -203,8 +207,58 @@ app.post('/login', async (req, res) => {
 
         const pp1_p = p_check;
 
-        console.log('p_index : ' + pp_p);
-        console.log('p_check : ' + pp1_p);
+        // console.log('p_index : ' + pp_p);
+        // console.log('p_check : ' + pp1_p);
+
+
+
+
+        //pushups: 
+        const currentDateObj_d = new Date();
+        const year_d = currentDateObj_d.getFullYear();
+        const month_d = String(currentDateObj_d.getMonth() + 1).padStart(2, '0');
+        const day_d = String(currentDateObj_p.getDate()).padStart(2, '0');
+        const currentDate_d = `${year_d}-${month_d}-${day_d}`;
+
+        const startDate_d = user.d_goal_set_date;
+
+        const startDateObj_d = new Date(startDate_d);
+
+        const index1_d = Math.floor((currentDateObj_d - startDateObj_d) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_d);
+        console.log(currentDateObj_d);
+
+        let index_d = index1_d;
+
+        let d_check = 'no';
+
+        if (user.dumble[index_d] == '1') {
+            console.log('already exists');
+            d_check = 'done';
+        } else {
+            console.log('not exists');
+            d_check = 'undone';
+
+        }
+
+        const count3 = user.dumble.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_d = index_d;
+
+        const pp1_d = d_check;
+
+        console.log('d_index : ' + pp_d);
+        console.log('d_check : ' + pp1_d);
+
+
 
 
         user.meditation_count = count;
@@ -218,6 +272,11 @@ app.post('/login', async (req, res) => {
         user.pushups_count = count2;
         user.pushups_check = pp1_p;
         user.pushups_current_date_index = pp_p;
+
+
+        user.dumble_count = count3;
+        user.dumble_check = pp1_d;
+        user.dumble_current_date_index = pp_d;
 
 
         //learderboard
@@ -246,6 +305,11 @@ app.post('/login', async (req, res) => {
             puspups: user.puspups_count,
             puspups_check: user.puspups_check,
             puspups_current_date_index: user.puspups_current_date_index,
+
+            dumble: user.dumble,
+            dumble_count: user.dumble_count,
+            dumble_check: user.dumble_check,
+            dumbles_current_date_index: user.dumble_current_date_index,
 
             top_users: topUsers.map((user) => ({
                 _id: user._id,
@@ -349,7 +413,7 @@ app.post('/login', async (req, res) => {
 // });
 
 app.post('/submitmeditation', async (req, res) => {
-    const { userid, med_checked, j_checked } = req.query;
+    const { userid, med_checked, j_checked, p_checked, d_checked } = req.query;
 
     try {
         const currentDateObj = new Date();
@@ -448,6 +512,101 @@ app.post('/submitmeditation', async (req, res) => {
 
         else {
             console.log('med not checked');
+        }
+
+
+
+
+
+        //puspups
+
+        const currentDateObj_p = new Date();
+        const year_p = currentDateObj_p.getFullYear();
+        const month_p = String(currentDateObj_p.getMonth() + 1).padStart(2, '0');
+        const day_p = String(currentDateObj_p.getDate()).padStart(2, '0');
+        const currentDate_p = `${year_p}-${month_p}-${day_p}`;
+
+
+        const startDate_p = user.p_goal_set_date;
+        console.log(startDate_p);
+
+        const startDateObj_p = new Date(startDate_p);
+        console.log(startDateObj_p);
+
+
+        const index_p = Math.floor((currentDateObj_p - startDateObj_p) / (24 * 60 * 60 * 1000));
+
+        console.log('p index: ' + index_p);
+
+        console.log("p_checked : " + p_checked);
+
+        if (p_checked == 'done') {
+            if (user.puspups[index_p] == '0') {
+
+                user.puspups[index_p] = '1'; // Make sure the value is a string '1'
+                user.points = user.points + 100;
+
+                console.log(user.puspups);
+                await user.save();
+
+                console.log('p updated')
+
+
+            }
+            else {
+                console.log('p already updated')
+            }
+        }
+
+        else {
+            console.log('p not checked');
+        }
+
+
+
+
+        //dumble
+
+        const currentDateObj_d = new Date();
+        const year_d = currentDateObj_d.getFullYear();
+        const month_d = String(currentDateObj_d.getMonth() + 1).padStart(2, '0');
+        const day_d = String(currentDateObj_d.getDate()).padStart(2, '0');
+        const currentDate_d = `${year_d}-${month_d}-${day_d}`;
+
+
+        const startDate_d = user.d_goal_set_date;
+        console.log(startDate_d);
+
+        const startDateObj_d = new Date(startDate_d);
+        console.log(startDateObj_d);
+
+
+        const index_d = Math.floor((currentDateObj_d - startDateObj_d) / (24 * 60 * 60 * 1000));
+
+        console.log('d index: ' + index_d);
+
+        console.log("d_checked : " + d_checked);
+
+        if (d_checked == 'done') {
+            if (user.dumble[index_d] == '0') {
+
+                user.dumble[index_d] = '1'; // Make sure the value is a string '1'
+                user.points = user.points + 100;
+
+                console.log(user.dumble);
+                await user.save();
+
+                console.log('d updated')
+
+
+            }
+            else {
+                console.log('d already updated')
+            }
+        }
+
+        else {
+            console.log('p not checked');
         }
 
 
