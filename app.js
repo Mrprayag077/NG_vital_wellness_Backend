@@ -2,11 +2,18 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require("mongoose");
+const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
-
+app.use(
+    cors({
+        origin: ["http://localhost:3000"],
+        methods: ["GET", "POST"],
+        credentials: true,
+    })
+);
 
 mongoose.set('strictQuery', false);
 
@@ -28,7 +35,11 @@ const usersSchema = new mongoose.Schema({
     userid: String,
     password: String,
     goal_set_date: String,
+    j_goal_set_date: String,
+    p_goal_set_date: String,
     meditation: [String],
+    jogging: [String],
+    puspups: [String],
     points: Number
 
     // Add other fields as needed
@@ -68,9 +79,10 @@ app.post('/login', async (req, res) => {
 
         let index = index1;
 
-        console.log(startDateObj);
-        console.log(currentDateObj);
-        console.log(index);
+        // console.log(startDateObj);
+        // console.log(currentDateObj);
+        // console.log(index);
+
 
         let m_check = 'no';
 
@@ -92,13 +104,121 @@ app.post('/login', async (req, res) => {
         }, 0);
 
         const pp = index;
+
         const pp1 = m_check;
 
-        console.log('m_check : ' + m_check);
+
+
+
+        //jogging
+
+        const currentDateObj_j = new Date();
+        const year_j = currentDateObj_j.getFullYear();
+        const month_j = String(currentDateObj_j.getMonth() + 1).padStart(2, '0');
+        const day_j = String(currentDateObj_j.getDate()).padStart(2, '0');
+        const currentDate_j = `${year_j}-${month_j}-${day_j}`;
+
+        const startDate_j = user.j_goal_set_date;
+
+        const startDateObj_j = new Date(startDate_j);
+
+        const index1_j = Math.floor((currentDateObj_j - startDateObj_j) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_j);
+        console.log(currentDateObj_j);
+
+        let index_j = index1_j;
+
+        let j_check = 'no';
+
+        if (user.jogging[index_j] == '1') {
+            console.log('already exists');
+            j_check = 'done';
+        } else {
+            console.log('not exists');
+            j_check = 'undone';
+
+        }
+
+        const count1 = user.jogging.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_j = index_j;
+
+        const pp1_j = j_check;
+
+
+        // console.log('j_index : ' + pp_j);
+        // console.log('j_check : ' + pp1_j);
+
+
+
+
+
+        //pushups: 
+        const currentDateObj_p = new Date();
+        const year_p = currentDateObj_p.getFullYear();
+        const month_p = String(currentDateObj_p.getMonth() + 1).padStart(2, '0');
+        const day_p = String(currentDateObj_p.getDate()).padStart(2, '0');
+        const currentDate_p = `${year_p}-${month_p}-${day_p}`;
+
+        const startDate_p = user.p_goal_set_date;
+
+        const startDateObj_p = new Date(startDate_p);
+
+        const index1_p = Math.floor((currentDateObj_p - startDateObj_p) / (24 * 60 * 60 * 1000));
+
+        console.log(startDateObj_p);
+        console.log(currentDateObj_p);
+
+        let index_p = index1_p;
+
+        let p_check = 'no';
+
+        if (user.puspups[index_p] == '1') {
+            console.log('already exists');
+            p_check = 'done';
+        } else {
+            console.log('not exists');
+            p_check = 'undone';
+
+        }
+
+        const count2 = user.puspups.reduce((accumulator, currentValue) => {
+            if (currentValue === '1') {
+                return accumulator + 1;
+            } else {
+                return accumulator;
+            }
+        }, 0);
+
+
+        const pp_p = index_p;
+
+        const pp1_p = p_check;
+
+        console.log('p_index : ' + pp_p);
+        console.log('p_check : ' + pp1_p);
+
 
         user.meditation_count = count;
         user.meditation_check = pp1;
         user.meditation_current_date_index = pp;
+
+        user.jogging_count = count1;
+        user.jogging_check = pp1_j;
+        user.jogging_current_date_index = pp_j;
+
+        user.pushups_count = count2;
+        user.pushups_check = pp1_p;
+        user.pushups_current_date_index = pp_p;
+
 
         //learderboard
         const topUsers = await users.find({}).sort({ points: -1 }).limit(3);
@@ -115,6 +235,18 @@ app.post('/login', async (req, res) => {
             meditation_count: user.meditation_count,
             meditation_check: user.meditation_check,
             meditation_current_date_index: user.meditation_current_date_index,
+
+            jogging: user.jogging,
+            jogging_count: user.jogging_count,
+            jogging_check: user.jogging_check,
+            jogging_current_date_index: user.jogging_current_date_index,
+
+
+            puspups: user.puspups,
+            puspups: user.puspups_count,
+            puspups_check: user.puspups_check,
+            puspups_current_date_index: user.puspups_current_date_index,
+
             top_users: topUsers.map((user) => ({
                 _id: user._id,
                 username: user.username,
@@ -217,7 +349,7 @@ app.post('/login', async (req, res) => {
 // });
 
 app.post('/submitmeditation', async (req, res) => {
-    const { userid, med_checked } = req.query;
+    const { userid, med_checked, j_checked } = req.query;
 
     try {
         const currentDateObj = new Date();
@@ -262,13 +394,64 @@ app.post('/submitmeditation', async (req, res) => {
 
             }
             else {
-                console.log('already updated')
+                console.log(' med already updated')
             }
         }
 
         else {
-            console.log('not checked');
+            console.log('med not checked');
         }
+
+
+
+
+
+        //jogging
+
+        const currentDateObj_j = new Date();
+        const year_j = currentDateObj_j.getFullYear();
+        const month_j = String(currentDateObj_j.getMonth() + 1).padStart(2, '0');
+        const day_j = String(currentDateObj_j.getDate()).padStart(2, '0');
+        const currentDate_j = `${year_j}-${month_j}-${day_j}`;
+
+
+        const startDate_j = user.j_goal_set_date;
+        console.log(startDate_j);
+
+        const startDateObj_j = new Date(startDate_j);
+        console.log(startDateObj_j);
+
+
+        const index_j = Math.floor((currentDateObj_j - startDateObj_j) / (24 * 60 * 60 * 1000));
+
+        console.log('j index: ' + index_j);
+
+        console.log("j_checked : " + j_checked);
+
+        if (j_checked == 'done') {
+            if (user.jogging[index_j] == '0') {
+
+                user.jogging[index_j] = '1'; // Make sure the value is a string '1'
+                user.points = user.points + 100;
+
+                console.log(user.jogging);
+                await user.save();
+
+                console.log('j updated')
+
+
+            }
+            else {
+                console.log('j already updated')
+            }
+        }
+
+        else {
+            console.log('med not checked');
+        }
+
+
+
 
         res.json({ message: 'Meditation submitted successfully' });
     } catch (error) {
