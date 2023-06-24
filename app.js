@@ -69,11 +69,12 @@ app.post('/login', async (req, res) => {
         const user = await users.findOne({ userid });
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.json({ error: 'User not found' });
         }
 
         if (user.password !== password) {
-            return res.status(401).json({ error: 'Invalid password' });
+           // return res.status(401).json({ error: 'Invalid password' });
+            return res.json({ error: 'Invalid password' });
         }
 
         const currentDateObj = new Date();
